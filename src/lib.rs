@@ -1,5 +1,5 @@
 mod crud_helper;
-mod data_error;
+mod crudy_error;
 
 pub use crud_helper::CrudHelper;
-pub use data_error::PostgresDataError;
+pub use crudy_error::CrudyError;

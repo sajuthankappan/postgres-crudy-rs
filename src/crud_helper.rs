@@ -1,7 +1,7 @@
 use tokio_pg_mapper::FromTokioPostgresRow;
 use tokio_postgres::{types::ToSql, GenericClient, Row, ToStatement};
 
-use crate::data_error::PostgresDataError;
+use crate::crudy_error::CrudyError;
 
 #[derive(Debug, Clone)]
 pub struct CrudHelper {
@@ -21,7 +21,7 @@ impl CrudHelper {
         }
     }
 
-    pub async fn get_all<T, Client>(&self, client: &Client) -> Result<Vec<T>, PostgresDataError>
+    pub async fn get_all<T, Client>(&self, client: &Client) -> Result<Vec<T>, CrudyError>
     where
         T: FromTokioPostgresRow,
         Client: GenericClient,
@@ -39,7 +39,7 @@ impl CrudHelper {
         &self,
         client: &Client,
         order_by: &str,
-    ) -> Result<Vec<T>, PostgresDataError>
+    ) -> Result<Vec<T>, CrudyError>
     where
         T: FromTokioPostgresRow,
         Client: GenericClient,
@@ -53,10 +53,7 @@ impl CrudHelper {
         Ok(items)
     }
 
-    pub async fn get_first<T, Client>(
-        &self,
-        client: &Client,
-    ) -> Result<Option<T>, PostgresDataError>
+    pub async fn get_first<T, Client>(&self, client: &Client) -> Result<Option<T>, CrudyError>
     where
         T: FromTokioPostgresRow,
         Client: GenericClient,
@@ -82,7 +79,7 @@ impl CrudHelper {
         by_field: &str,
         value: &U,
         order_by: Option<&str>,
-    ) -> Result<Vec<T>, PostgresDataError>
+    ) -> Result<Vec<T>, CrudyError>
     where
         T: FromTokioPostgresRow,
         U: ToSql + Sync + Send,
@@ -99,7 +96,7 @@ impl CrudHelper {
         by_field_2: &str,
         value_2: &V,
         order_by: Option<&str>,
-    ) -> Result<Vec<T>, PostgresDataError>
+    ) -> Result<Vec<T>, CrudyError>
     where
         T: FromTokioPostgresRow,
         U: ToSql + Sync + Send,
@@ -116,7 +113,7 @@ impl CrudHelper {
         &self,
         client: &Client,
         id: &str,
-    ) -> Result<Option<T>, PostgresDataError>
+    ) -> Result<Option<T>, CrudyError>
     where
         T: FromTokioPostgresRow,
         Client: GenericClient,
@@ -125,11 +122,7 @@ impl CrudHelper {
         self.get_by(client, "id", &id).await
     }
 
-    pub async fn get<T, I, Client>(
-        &self,
-        client: &Client,
-        id: &I,
-    ) -> Result<Option<T>, PostgresDataError>
+    pub async fn get<T, I, Client>(&self, client: &Client, id: &I) -> Result<Option<T>, CrudyError>
     where
         T: FromTokioPostgresRow,
         I: ToSql + Sync + Send,
@@ -143,7 +136,7 @@ impl CrudHelper {
         client: &Client,
         id: &I,
         fields: &str,
-    ) -> Result<Option<T>, PostgresDataError>
+    ) -> Result<Option<T>, CrudyError>
     where
         T: FromTokioPostgresRow,
         I: ToSql + Sync + Send,
@@ -157,7 +150,7 @@ impl CrudHelper {
         client: &Client,
         field: &str,
         value: &U,
-    ) -> Result<Option<T>, PostgresDataError>
+    ) -> Result<Option<T>, CrudyError>
     where
         T: FromTokioPostgresRow,
         U: ToSql + Sync + Send,
@@ -173,7 +166,7 @@ impl CrudHelper {
         value_1: &U,
         field_2: &str,
         value_2: &V,
-    ) -> Result<Option<T>, PostgresDataError>
+    ) -> Result<Option<T>, CrudyError>
     where
         T: FromTokioPostgresRow,
         U: ToSql + Sync + Send,
@@ -193,7 +186,7 @@ impl CrudHelper {
         value_2: &V,
         field_3: &str,
         value_3: &W,
-    ) -> Result<Option<T>, PostgresDataError>
+    ) -> Result<Option<T>, CrudyError>
     where
         T: FromTokioPostgresRow,
         U: ToSql + Sync + Send,
@@ -213,7 +206,7 @@ impl CrudHelper {
         fields: &str,
         field: &str,
         value: &U,
-    ) -> Result<Option<T>, PostgresDataError>
+    ) -> Result<Option<T>, CrudyError>
     where
         T: FromTokioPostgresRow,
         U: ToSql + Sync + Send,
@@ -228,7 +221,7 @@ impl CrudHelper {
         fields: &str,
         by_field: &str,
         value: &U,
-    ) -> Result<Option<T>, PostgresDataError>
+    ) -> Result<Option<T>, CrudyError>
     where
         T: FromTokioPostgresRow,
         U: ToSql + Sync + Send,
@@ -253,7 +246,7 @@ impl CrudHelper {
         value_1: &U,
         by_field_2: &str,
         value_2: &V,
-    ) -> Result<Option<T>, PostgresDataError>
+    ) -> Result<Option<T>, CrudyError>
     where
         T: FromTokioPostgresRow,
         U: ToSql + Sync + Send,
@@ -280,7 +273,7 @@ impl CrudHelper {
         value_2: &V,
         by_field_3: &str,
         value_3: &W,
-    ) -> Result<Option<T>, PostgresDataError>
+    ) -> Result<Option<T>, CrudyError>
     where
         T: FromTokioPostgresRow,
         U: ToSql + Sync + Send,
@@ -306,7 +299,7 @@ impl CrudHelper {
         by_field: &str,
         value: &U,
         order_by: Option<&str>,
-    ) -> Result<Vec<T>, PostgresDataError>
+    ) -> Result<Vec<T>, CrudyError>
     // TODO: Rename to get_many
     where
         T: FromTokioPostgresRow,
@@ -338,7 +331,7 @@ impl CrudHelper {
         by_field_2: &str,
         value_2: &V,
         order_by: Option<&str>,
-    ) -> Result<Vec<T>, PostgresDataError>
+    ) -> Result<Vec<T>, CrudyError>
     // TODO: Rename to get_many
     where
         T: FromTokioPostgresRow,
@@ -374,7 +367,7 @@ impl CrudHelper {
         client: &Client,
         query: &U,
         params: &[&(dyn ToSql + Sync)],
-    ) -> Result<Vec<T>, PostgresDataError>
+    ) -> Result<Vec<T>, CrudyError>
     where
         T: FromTokioPostgresRow,
         U: ?Sized + ToStatement + Sync + Send,
@@ -390,7 +383,7 @@ impl CrudHelper {
         client: &Client,
         query: &U,
         params: &[&(dyn ToSql + Sync)],
-    ) -> Result<Option<T>, PostgresDataError>
+    ) -> Result<Option<T>, CrudyError>
     where
         T: FromTokioPostgresRow,
         U: ?Sized + ToStatement + Sync + Send,
@@ -406,11 +399,7 @@ impl CrudHelper {
         }
     }
 
-    pub async fn delete<T, I, Client>(
-        &self,
-        client: &Client,
-        id: &I,
-    ) -> Result<u64, PostgresDataError>
+    pub async fn delete<T, I, Client>(&self, client: &Client, id: &I) -> Result<u64, CrudyError>
     where
         T: FromTokioPostgresRow,
         I: ToSql + Sync + Send,
@@ -431,7 +420,7 @@ impl CrudHelper {
         client: &Client,
         statement: &T,
         params: &[&(dyn ToSql + Sync)],
-    ) -> Result<u64, PostgresDataError>
+    ) -> Result<u64, CrudyError>
     where
         T: ?Sized + ToStatement + Send + Sync,
         Client: GenericClient,
@@ -446,7 +435,7 @@ impl CrudHelper {
         id: &I,
         statement: &T,
         params: &[&(dyn ToSql + Sync)],
-    ) -> Result<U, PostgresDataError>
+    ) -> Result<U, CrudyError>
     where
         T: ?Sized + ToStatement + Send + Sync,
         U: FromTokioPostgresRow,
@@ -462,7 +451,7 @@ impl CrudHelper {
         let item = self
             .get::<U, I, Client>(client, id)
             .await?
-            .ok_or(PostgresDataError::NoDataError(id.to_string()))?;
+            .ok_or(CrudyError::NoDataError(id.to_string()))?;
         Ok(item)
     }
 
