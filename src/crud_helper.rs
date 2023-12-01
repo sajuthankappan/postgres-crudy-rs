@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use tokio_pg_mapper::FromTokioPostgresRow;
 use tokio_postgres::{types::ToSql, GenericClient, Row, ToStatement};
 
@@ -129,6 +131,17 @@ impl CrudHelper {
         Client: GenericClient,
     {
         self.get_by(client, "id", &id).await
+    }
+
+    pub async fn get_one<T, I, Client>(&self, client: &Client, id: &I) -> Result<T, CrudyError>
+    where
+        T: FromTokioPostgresRow,
+        I: ToSql + Sync + Send + Display,
+        Client: GenericClient,
+    {
+        self.get_by(client, "id", &id)
+            .await?
+            .ok_or(CrudyError::new_no_data_error(&T::sql_table(), id))
     }
 
     pub async fn get_specific_fields<T, I, Client>(
